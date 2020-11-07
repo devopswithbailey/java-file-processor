@@ -27,16 +27,17 @@ public class CommonsCSV {
 
     private static final Random random = new Random();
 
-    private static final String LARGE_FILE = "C:\\WorkSpace\\spring-projects\\java-file-processor\\src\\main\\resources\\book_large.csv";
+    ///Users/xhuang4/ProjectSpace/xhuang4/java-file-processor/src/main/resources/application.properties
+    private static final String LARGE_FILE = "/Users/xhuang4/ProjectSpace/xhuang4/java-file-processor/src/main/resources/book_large.csv";
 
-    private static final String LARGE_FILE_TOKENIZED = "C:\\WorkSpace\\spring-projects\\java-file-processor\\src\\main\\resources\\book_large_tokenized.csv";
+    private static final String LARGE_FILE_TOKENIZED = "/Users/xhuang4/ProjectSpace/xhuang4/java-file-processor/src/main/resources/book_large_tokenized.csv";
 
     private Instant start;
 
     public static void main(String[] args) throws IOException {
 //        new CommonsCSV().readCSV();
 //        new CommonsCSV().createCSVFile();
-//        new CommonsCSV().createLargeCSVFile();
+//        new CommonsCSV().createLargeCSVFile(LARGE_FILE);
         new CommonsCSV().readWriteCSV();
     }
 

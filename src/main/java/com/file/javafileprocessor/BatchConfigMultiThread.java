@@ -1,5 +1,7 @@
 package com.file.javafileprocessor;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
@@ -15,6 +17,7 @@ import org.springframework.batch.item.file.transform.BeanWrapperFieldExtractor;
 import org.springframework.batch.item.file.transform.DelimitedLineAggregator;
 import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.FileSystemResource;
@@ -26,6 +29,8 @@ import java.util.concurrent.ThreadPoolExecutor;
 
 @Configuration
 @EnableBatchProcessing
+@Setter
+@Getter
 public class BatchConfigMultiThread {
 
     @Autowired
@@ -34,7 +39,11 @@ public class BatchConfigMultiThread {
     @Autowired
     private StepBuilderFactory stepBuilderFactory;
 
-    private Resource inputResource=new FileSystemResource("java-file-processor/src/main/resources/book_large.csv");
+    @Value("${spring.batch.threads.size}")
+    private int threadsSize;
+
+//    private Resource inputResource=new FileSystemResource("java-file-processor/src/main/resources/book_large.csv");
+    private Resource inputResource=new FileSystemResource("java-file-processor/src/main/resources/book.csv");
 
     private Resource outputResource = new FileSystemResource("java-file-processor/src/main/resources/output/outputData.csv");
 
@@ -68,10 +77,11 @@ public class BatchConfigMultiThread {
 
     @Bean
     public TaskExecutor taskExecutor() {
+        System.out.println("batch threads size: "+threadsSize);
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setCorePoolSize(64);
-        executor.setMaxPoolSize(64);
-        executor.setQueueCapacity(64);
+        executor.setCorePoolSize(threadsSize);
+        executor.setMaxPoolSize(threadsSize);
+        executor.setQueueCapacity(threadsSize);
         executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
         executor.setThreadNamePrefix("MultiThreaded-");
         return executor;
