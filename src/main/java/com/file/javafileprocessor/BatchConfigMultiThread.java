@@ -7,6 +7,7 @@ import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.file.FlatFileItemReader;
@@ -43,7 +44,7 @@ public class BatchConfigMultiThread {
     private int threadsSize;
 
 //    private Resource inputResource=new FileSystemResource("java-file-processor/src/main/resources/book_large.csv");
-    private Resource inputResource=new FileSystemResource("java-file-processor/src/main/resources/book.csv");
+//    private Resource inputResource=new FileSystemResource("java-file-processor/src/main/resources/book.csv");
 
     private Resource outputResource = new FileSystemResource("java-file-processor/src/main/resources/output/outputData.csv");
 
@@ -68,7 +69,7 @@ public class BatchConfigMultiThread {
         return stepBuilderFactory
                 .get("step")
                 .<Book, Book>chunk( 1000)
-                .reader(reader())
+                .reader(reader(null))
                 .processor(processor())
                 .writer(writer())
                 .taskExecutor(taskExecutor())
@@ -105,11 +106,12 @@ public class BatchConfigMultiThread {
      */
 
     @Bean
-    public FlatFileItemReader<Book> reader() {
+    @StepScope
+    public FlatFileItemReader<Book> reader(@Value("#{jobParameters[filename]}") String filename) {
         //Create reader instance
         FlatFileItemReader<Book> reader = new FlatFileItemReader<Book>();
 
-        reader.setResource(inputResource);
+        reader.setResource(new FileSystemResource(filename));
 
         //Set number of lines to skips. Use it if file has header rows.
         reader.setLinesToSkip(1);

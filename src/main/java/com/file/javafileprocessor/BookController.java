@@ -20,29 +20,20 @@ public class BookController {
   @Autowired
   BatchConfigMultiThread batchConfig;
 
-  /*
-  //    private Resource inputResource=new FileSystemResource("java-file-processor/src/main/resources/book_large.csv");
-    private Resource inputResource=new FileSystemResource("java-file-processor/src/main/resources/book.csv");
-
-    private Resource outputResource = new FileSystemResource("java-file-processor/src/main/resources/output/outputData.csv");
-
-   */
-
   @GetMapping("/ready1")
   public void ready1() throws Exception {
-//    batchConfig.setInputResource(new FileSystemResource("java-file-processor/src/main/resources/book.csv"));
-    perform();
+    perform("java-file-processor/src/main/resources/book.csv");
   }
 
-//  @GetMapping("/ready2")
-//  public void ready2() throws Exception {
-//    batchConfig.setInputResource(new FileSystemResource("java-file-processor/src/main/resources/book_large.csv"));
-//    perform();
-//  }
+  @GetMapping("/ready2")
+  public void ready2() throws Exception {
+    perform("java-file-processor/src/main/resources/book1.csv");
+  }
 
-  public void perform() throws Exception {
+  public void perform(String file) throws Exception {
     JobParameters params = new JobParametersBuilder()
         .addString("JobID", String.valueOf(System.currentTimeMillis()))
+        .addString("filename", file)
         .toJobParameters();
     jobLauncher.run(job, params);
   }
